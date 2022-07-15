@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: pdf-parser
+  name: pdf-parser
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pdf-parser
+  template:
+    metadata:
+      labels:
+        app: pdf-parser
+    spec:
+      containers:
+      - name: pdf-parser
+        image: europe-west4-docker.pkg.dev/kimo-prod/kimo-images/pdf-parser:latest
+        imagePullPolicy: Always
+        tty: true

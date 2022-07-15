@@ -2,3 +2,6 @@ PyPDF2
 pymongo[srv]
 requests
 tqdm
+pdf2image
+pillow
+tesserocr
