@@ -4,3 +4,5 @@ MONGO_URI: str = "mongodb+srv://nikos:gykgEvwk6PuLDAac@retriever." \
 MONGO_BATCH_SIZE: int = 10
 
 user_project: str = "kimo-prod"
+
+MAX_PAGES: int = 5

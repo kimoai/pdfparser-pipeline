@@ -37,38 +37,46 @@ def processText(text: str) -> str:
     return text
 
 def parsePDF(bites: bytes) -> str:
-    file = io.BytesIO(bites)
-    reader = PdfReader(file)
+    with io.BytesIO() as stream:
+        stream.write(bites)
+        stream.seek(0)
+        reader = PdfReader(stream)
 
-    text_tot = []
-    for page in reader.pages:
-        text = page.extract_text()
-        text = processText(text)
-        if len(text) > 0:
-            text_tot.append(text)
-        else:
-            # parsing does not work move to OCR
-            return '<FAILED>'
+        text_tot = []
+        for page in reader.pages:
+            text = page.extract_text()
+            text = processText(text)
+            if len(text) > 0:
+                text_tot.append(text)
+            else:
+                # parsing does not work move to OCR
+                return '<FAILED>'
 
-    return '. '.join(text_tot)
+        return '. '.join(text_tot)
 
 def parseWithOCR(bites : bytes) -> str:
-    pdf_pages = convert_from_bytes(bites, 500)
-    text_tot = []
+    # with tesserocr.PyTessBaseAPI() as api:
+    try:
+        pdf_pages = convert_from_bytes(bites, use_pdftocairo=True, grayscale=True, thread_count=4, timeout=30, last_page=settings.MAX_PAGES)
+        text_tot = []
 
-    for page_enumeration, pil_image in enumerate(pdf_pages, start=1):
-        api.SetImage(pil_image)
-        text = api.GetUTF8Text()
-        text = processText(text)
-        text_tot.append(text)
+        #compute max 5 pages
+        for page_enumeration, pil_image in enumerate(pdf_pages, start=1):
+            api.SetImage(pil_image)
+            text = api.GetUTF8Text()
+            text = processText(text)
+            text_tot.append(text)
 
         if len(text_tot) > 0:
             parsed_text = '. '.join(text_tot)
             return parsed_text
         else:
             return '<FAILED>'
+    except:
+            return '<FAILED>'
 
 def parsePDFcontent():
+    logging.info('STARTED PARSING')
     filter = {'content_type': {'$in': ['cheatsheets', 'slides', 'reports']},
               'text': {'$eq': None}}
     projection = {'content_url': 1, '_id': 1}
@@ -78,6 +86,7 @@ def parsePDFcontent():
     queue = []
     start = time.time()
     for i, doc in enumerate(tqdm(docs)):
+        logging.info(f'element num {i}, id: {doc}')
         if 'content_url' not in doc:
             logging.info(f'parsing failed for id {doc["_id"]}, missing content_url')
             continue

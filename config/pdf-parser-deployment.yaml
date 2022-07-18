@@ -19,3 +19,10 @@ spec:
         image: europe-west4-docker.pkg.dev/kimo-prod/kimo-images/pdf-parser:latest
         imagePullPolicy: Always
         tty: true
+        resources:
+          limits:
+            cpu: "4"
+            memory: 1200Mi
+          requests:
+            cpu: "4"
+            memory: 1200Mi
