@@ -1,5 +1,5 @@
 import pickle
-from gibberish_detector import gib_detect_train
+from app.gibberish_detector import gib_detect_train
 
 model_data = pickle.load(open('../pdfparser-pipeline/gibberish_detector/gib_model.pki', 'rb'))
 

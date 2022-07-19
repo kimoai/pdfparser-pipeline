@@ -1,10 +1,7 @@
-import os
 from PyPDF2 import PdfReader
 import re
 import requests
 import pymongo
-
-import gibberish_detector.gib_detect
 import settings
 from tqdm import tqdm
 from pymongo import UpdateOne
@@ -13,7 +10,7 @@ import tesserocr
 from pdf2image import convert_from_bytes
 import logging
 import time
-from gibberish_detector.gib_detect import predictGibberish
+from app.gibberish_detector.gib_detect import predictGibberish
 
 client = pymongo.mongo_client.MongoClient(settings.MONGO_URI)
 db = client['content']
