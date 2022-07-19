@@ -21,8 +21,8 @@ spec:
         tty: true
         resources:
           limits:
-            cpu: "4"
+            cpu: "2"
             memory: 1200Mi
           requests:
-            cpu: "4"
+            cpu: "2"
             memory: 1200Mi
